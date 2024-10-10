@@ -1,10 +1,8 @@
-package com.coding.openweatherapp.domain.repository
+package com.coding.openweatherapp.data.source.remoteDataSource
 
 import com.coding.openweatherapp.data.model.WeatherData
 
-interface Repository {
+interface RemoteDataSource {
     suspend fun getWeatherForCity(cityName: String): Result<WeatherData>
     suspend fun getWeatherForLocation(latitude: Double, longitude: Double): Result<WeatherData>
-    fun getLastSearchedCity(): String?
-    fun saveLastSearchedCity(cityName: String)
 }
