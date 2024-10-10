@@ -11,9 +11,11 @@ import com.coding.openweatherapp.domain.usecase.GetWeatherForCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLastSearchedCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLocationUseCase
 import com.coding.openweatherapp.data.api.ApiService
+import com.coding.openweatherapp.ui.viewmodel.WeatherViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -60,5 +62,9 @@ val appModule = module {
 
     factory {
         GetWeatherForLocationUseCase(get())
+    }
+
+    viewModel {
+        WeatherViewModel(get(), get(), get())
     }
 }
