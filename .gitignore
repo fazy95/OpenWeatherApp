@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.idea/shelf/Changes.xml
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/shelf/Changes/shelved.patch
