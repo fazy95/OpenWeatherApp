@@ -1,4 +1,4 @@
-package com.coding.weatherapp.data.api
+package com.coding.openweatherapp.data.api
 
 import com.coding.openweatherapp.data.model.WeatherData
 import retrofit2.Response

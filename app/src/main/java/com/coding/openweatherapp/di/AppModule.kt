@@ -1,13 +1,16 @@
 package com.coding.openweatherapp.di
 
+import com.coding.openweatherapp.BuildConfig
 import com.coding.openweatherapp.data.repository.RepositoryImpl
 import com.coding.openweatherapp.data.source.localDataSource.LocalDataSource
 import com.coding.openweatherapp.data.source.localDataSource.LocalDataSourceImpl
 import com.coding.openweatherapp.data.source.remoteDataSource.RemoteDataSource
 import com.coding.openweatherapp.data.source.remoteDataSource.RemoteDataSourceImpl
 import com.coding.openweatherapp.domain.repository.Repository
-import com.coding.weatherapp.BuildConfig
-import com.coding.weatherapp.data.api.ApiService
+import com.coding.openweatherapp.domain.usecase.GetWeatherForCityUseCase
+import com.coding.openweatherapp.domain.usecase.GetWeatherForLastSearchedCityUseCase
+import com.coding.openweatherapp.domain.usecase.GetWeatherForLocationUseCase
+import com.coding.openweatherapp.data.api.ApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -46,5 +49,16 @@ val appModule = module {
     }
     single<Repository> {
         RepositoryImpl(get(), get())
+    }
+    factory {
+        GetWeatherForCityUseCase(get())
+    }
+
+    factory {
+        GetWeatherForLastSearchedCityUseCase(get())
+    }
+
+    factory {
+        GetWeatherForLocationUseCase(get())
     }
 }
