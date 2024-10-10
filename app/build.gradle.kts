@@ -4,19 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.coding.weatherapp"
+    namespace = "com.coding.openweatherapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.coding.weatherapp"
+        applicationId = "com.coding.openweatherapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        //Open Weather API Key in build config
-        buildConfigField("String", "OPEN_WEATHER_API_KEY",
-            "\"${project.findProperty("OPEN_WEATHER_API_KEY") ?: ""}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -33,7 +29,6 @@ android {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -46,7 +41,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = 	"1.5.15"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -94,10 +89,8 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.core.testing)
-    androidTestImplementation(libs.androidx.junit.v113)
-    androidTestImplementation(libs.androidx.espresso.core.v340)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
-    debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:")
+    debugImplementation("androidx.compose.ui:ui-tooling:")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

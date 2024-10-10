@@ -1,7 +1,7 @@
 package com.coding.openweatherapp.data.source.remoteDataSource
 
 import com.coding.openweatherapp.data.model.WeatherData
-import com.coding.weatherapp.data.api.ApiService
+import com.coding.openweatherapp.data.api.ApiService
 
 class RemoteDataSourceImpl(private val api: ApiService) : RemoteDataSource {
     override suspend fun getWeatherForCity(cityName: String): Result<WeatherData> {
