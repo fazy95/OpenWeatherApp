@@ -1,17 +1,23 @@
 package com.coding.openweatherapp.di
 
+import com.coding.openweatherapp.data.repository.LocationRepositoryImpl
 import com.coding.openweatherapp.BuildConfig
-import com.coding.openweatherapp.data.repository.RepositoryImpl
+import com.coding.openweatherapp.data.repository.WeatherRepositoryImpl
 import com.coding.openweatherapp.data.source.localDataSource.LocalDataSource
 import com.coding.openweatherapp.data.source.localDataSource.LocalDataSourceImpl
 import com.coding.openweatherapp.data.source.remoteDataSource.RemoteDataSource
 import com.coding.openweatherapp.data.source.remoteDataSource.RemoteDataSourceImpl
-import com.coding.openweatherapp.domain.repository.Repository
+import com.coding.openweatherapp.domain.repository.WeatherRepository
 import com.coding.openweatherapp.domain.usecase.GetWeatherForCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLastSearchedCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLocationUseCase
 import com.coding.openweatherapp.data.api.ApiService
+import com.coding.openweatherapp.domain.usecase.GetCheckPermissionUseCase
+import com.coding.openweatherapp.domain.usecase.GetConvertWeatherTemperatureUseCase
+import com.coding.openweatherapp.domain.usecase.GetCurrentLocationUseCase
 import com.coding.openweatherapp.ui.viewmodel.WeatherViewModel
+import com.coding.openweatherapp.domain.repository.LocationRepository
+import com.google.android.gms.location.LocationServices
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -24,8 +30,7 @@ val appModule = module {
     // Retrofit
     single {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level =
-                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         }
 
         val client = OkHttpClient.Builder()
@@ -39,32 +44,36 @@ val appModule = module {
     }
 
     // ApiService
-    single {
-        get<Retrofit>().create(ApiService::class.java)
-    }
+    single { get<Retrofit>().create(ApiService::class.java) }
 
-    single<RemoteDataSource> {
-        RemoteDataSourceImpl(get())
-    }
-    single<LocalDataSource> {
-        LocalDataSourceImpl(androidContext())
-    }
-    single<Repository> {
-        RepositoryImpl(get(), get())
-    }
-    factory {
-        GetWeatherForCityUseCase(get())
-    }
+    // Data Sources
+    single<RemoteDataSource> { RemoteDataSourceImpl(get()) }
+    single<LocalDataSource> { LocalDataSourceImpl(androidContext()) }
 
-    factory {
-        GetWeatherForLastSearchedCityUseCase(get())
-    }
+    // Location Services
+    single { LocationServices.getFusedLocationProviderClient(androidContext()) }
 
-    factory {
-        GetWeatherForLocationUseCase(get())
-    }
+    // Repositories
+    single<LocationRepository> { LocationRepositoryImpl(androidContext(), get()) }
+    single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
 
+    // Use Cases
+    factory { GetWeatherForCityUseCase(get()) }
+    factory { GetWeatherForLastSearchedCityUseCase(get()) }
+    factory { GetWeatherForLocationUseCase(get()) }
+    factory { GetCheckPermissionUseCase(get()) }
+    factory { GetCurrentLocationUseCase(get()) }
+    factory { GetConvertWeatherTemperatureUseCase() }
+
+    // ViewModel
     viewModel {
-        WeatherViewModel(get(), get(), get())
+        WeatherViewModel(
+            getWeatherForLastSearchedCity = get(),
+            getWeatherForCityUseCase = get(),
+            getWeatherForLocationUseCase = get(),
+            getCurrentLocationUseCase = get(),
+            getCheckPermissionUseCase = get(),
+            getConvertWeatherTemperatureUseCase = get()
+        )
     }
 }

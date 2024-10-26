@@ -6,7 +6,7 @@ import com.coding.openweatherapp.data.api.ApiService
 class RemoteDataSourceImpl(private val api: ApiService) : RemoteDataSource {
     override suspend fun getWeatherForCity(cityName: String): Result<WeatherData> {
         return try {
-            val response = api.getCurrentWeather(cityName, "9c10df011d0203dccc2932a10047bf8f")
+            val response = api.getCurrentWeather(cityName, "01edd5ea56e7fbbae0371c15a11d837f")
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {

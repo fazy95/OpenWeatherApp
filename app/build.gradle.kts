@@ -84,6 +84,13 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.material3)
 
+    implementation ("androidx.activity:activity-ktx:1.7.2")
+
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)

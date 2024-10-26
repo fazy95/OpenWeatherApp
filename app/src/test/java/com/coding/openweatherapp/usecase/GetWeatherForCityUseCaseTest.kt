@@ -1,7 +1,7 @@
 package com.coding.openweatherapp.usecase
 
 import com.coding.openweatherapp.data.model.WeatherData
-import com.coding.openweatherapp.domain.repository.Repository
+import com.coding.openweatherapp.domain.repository.WeatherRepository
 import com.coding.openweatherapp.domain.usecase.GetWeatherForCityUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations
 
 class GetWeatherForCityUseCaseTest {
     @Mock
-    private lateinit var weatherRepository: Repository
+    private lateinit var weatherRepository: WeatherRepository
 
     private lateinit var getWeatherForCityUseCase: GetWeatherForCityUseCase
 

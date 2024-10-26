@@ -2,7 +2,11 @@ package com.coding.openweatherapp.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.coding.openweatherapp.data.model.WeatherData
-import com.coding.openweatherapp.domain.repository.Repository
+import com.coding.openweatherapp.domain.repository.LocationRepository
+import com.coding.openweatherapp.domain.repository.WeatherRepository
+import com.coding.openweatherapp.domain.usecase.GetCheckPermissionUseCase
+import com.coding.openweatherapp.domain.usecase.GetConvertWeatherTemperatureUseCase
+import com.coding.openweatherapp.domain.usecase.GetCurrentLocationUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLastSearchedCityUseCase
 import com.coding.openweatherapp.domain.usecase.GetWeatherForLocationUseCase
@@ -33,7 +37,10 @@ class WeatherViewModelTest {
     private val testScope = TestScope(testDispatcher)
 
     @Mock
-    private lateinit var weatherRepository: Repository
+    private lateinit var weatherRepository: WeatherRepository
+
+    @Mock
+    private lateinit var locationRepository: LocationRepository
 
     private lateinit var viewModel: WeatherViewModel
 
@@ -43,6 +50,12 @@ class WeatherViewModelTest {
 
     private lateinit var getWeatherForLastSearchedCity: GetWeatherForLastSearchedCityUseCase
 
+    private lateinit var getCurrentLocationUseCase: GetCurrentLocationUseCase
+
+    private lateinit var getCheckPermissionUseCase: GetCheckPermissionUseCase
+
+    private lateinit var getConvertWeatherTemperatureUseCase: GetConvertWeatherTemperatureUseCase
+
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
@@ -50,7 +63,11 @@ class WeatherViewModelTest {
         getWeatherForCityUseCase = GetWeatherForCityUseCase(weatherRepository)
         getWeatherForLocationUseCase = GetWeatherForLocationUseCase(weatherRepository)
         getWeatherForLastSearchedCity = GetWeatherForLastSearchedCityUseCase(weatherRepository)
-        viewModel = WeatherViewModel(getWeatherForLastSearchedCity, getWeatherForCityUseCase, getWeatherForLocationUseCase)
+        getCurrentLocationUseCase = GetCurrentLocationUseCase(locationRepository)
+        getCheckPermissionUseCase = GetCheckPermissionUseCase(locationRepository)
+        getConvertWeatherTemperatureUseCase = GetConvertWeatherTemperatureUseCase()
+
+        viewModel = WeatherViewModel(getWeatherForLastSearchedCity, getWeatherForCityUseCase, getWeatherForLocationUseCase, getCurrentLocationUseCase, getCheckPermissionUseCase, getConvertWeatherTemperatureUseCase)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,7 +76,6 @@ class WeatherViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `getWeatherForCity success`() = testScope.runTest {
         // Given
@@ -78,7 +94,6 @@ class WeatherViewModelTest {
         assert((uiState as WeatherUiState.Success).data == weatherData)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `getWeatherForCity error`() = testScope.runTest {
         // Given
@@ -96,7 +111,6 @@ class WeatherViewModelTest {
         assert((uiState as WeatherUiState.Error).message.contains("City not found"))
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `getWeatherForLocation success`() = testScope.runTest {
         // Given
@@ -116,7 +130,6 @@ class WeatherViewModelTest {
         assert((uiState as WeatherUiState.Success).data == weatherData)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `getWeatherForLocation error`() = testScope.runTest {
         // Given

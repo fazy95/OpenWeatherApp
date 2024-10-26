@@ -1,5 +1,8 @@
 package com.coding.openweatherapp.ui.view
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,18 +28,26 @@ import coil.compose.AsyncImage
 import com.coding.openweatherapp.data.model.WeatherData
 import com.coding.openweatherapp.ui.viewmodel.WeatherUiState
 import com.coding.openweatherapp.ui.viewmodel.WeatherViewModel
+import com.coding.openweatherapp.utils.formatDecimalOnePlace
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun WeatherScreen(
-    viewModel: WeatherViewModel = koinViewModel()
+    viewModel: WeatherViewModel = koinViewModel(),
+    modifier: Modifier
+
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var cityName by remember { mutableStateOf("") }
+    var isCelsius by remember { mutableStateOf(true) }
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        viewModel.onLocationPermissionResult(isGranted)
+    }
+
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -53,10 +64,24 @@ fun WeatherScreen(
         ) {
             Text("Search")
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = { isCelsius = !isCelsius },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text("Convert")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = { permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION) },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text("Get current location")
+        }
         Spacer(modifier = Modifier.height(16.dp))
         when (val state = uiState) {
             is WeatherUiState.Loading -> CircularProgressIndicator()
-            is WeatherUiState.Success -> WeatherInfo(state.data)
+            is WeatherUiState.Success -> WeatherInfo(data = state.data, isCelsius = isCelsius, viewModel)
             is WeatherUiState.Error -> Text(
                 text = state.message,
                 color = MaterialTheme.colorScheme.error
@@ -68,15 +93,15 @@ fun WeatherScreen(
 
 
 @Composable
-fun WeatherInfo(data: WeatherData) {
-
+fun WeatherInfo(data: WeatherData, isCelsius: Boolean, viewModel: WeatherViewModel) {
     Column {
         Text(
             text = data.name,
             style = MaterialTheme.typography.headlineMedium
         )
         Text(
-            text = "${data.main.temp}°C",
+            text = if (isCelsius) {"${data.main.temp.formatDecimalOnePlace()}°C"}
+                    else "${viewModel.convertTemperature(data.main.temp).formatDecimalOnePlace()}°F",
             style = MaterialTheme.typography.displayLarge
         )
         Text(
