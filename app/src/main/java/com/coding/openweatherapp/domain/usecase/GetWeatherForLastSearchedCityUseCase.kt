@@ -1,8 +1,8 @@
 package com.coding.openweatherapp.domain.usecase
 
-import com.coding.openweatherapp.domain.repository.Repository
+import com.coding.openweatherapp.domain.repository.WeatherRepository
 
-class GetWeatherForLastSearchedCityUseCase(private val weatherRepository: Repository){
+class GetWeatherForLastSearchedCityUseCase(private val weatherRepository: WeatherRepository){
     operator fun invoke(): String? {
         return weatherRepository.getLastSearchedCity()
     }

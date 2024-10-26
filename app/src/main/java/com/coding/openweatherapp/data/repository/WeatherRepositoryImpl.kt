@@ -3,12 +3,12 @@ package com.coding.openweatherapp.data.repository
 import com.coding.openweatherapp.data.model.WeatherData
 import com.coding.openweatherapp.data.source.localDataSource.LocalDataSource
 import com.coding.openweatherapp.data.source.remoteDataSource.RemoteDataSource
-import com.coding.openweatherapp.domain.repository.Repository
+import com.coding.openweatherapp.domain.repository.WeatherRepository
 
-class RepositoryImpl(
+class WeatherRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val localWeatherDataSource: LocalDataSource
-) : Repository {
+) : WeatherRepository {
 
 
     override suspend fun getWeatherForCity(cityName: String): Result<WeatherData> {
